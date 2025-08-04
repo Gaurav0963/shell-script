@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Shell Scripting Manual</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Teal Accent -->
+    <!-- Application Structure Plan: A single-page layout with a sticky sidebar for navigation. This allows non-linear access to topics, which is ideal for a reference manual. The main content area will feature collapsible/interactive sections for code examples and practice questions to improve engagement and learning. This structure is chosen over a simple document to make the content more digestible and interactive for a beginner learning to code. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Core concepts (variables, loops, functions). Goal: Inform/Explain. Viz/Method: Styled text blocks, definition lists. Interaction: Copy-to-clipboard buttons for code snippets. Justification: Makes it easy for users to test code. Library: Vanilla JS.
+        - Report Info: if-else logic. Goal: Visualize flow. Viz/Method: A horizontal bar chart from Chart.js, styled to represent a decision flow (True/False paths). Interaction: Static chart. Justification: A visual representation aids understanding of conditional logic better than text alone. Library: Chart.js.
+        - Report Info: Practice Questions. Goal: Assess/Reinforce. Viz/Method: Accordion-style list where answers are hidden initially. Interaction: Click to toggle visibility of the answer. Justification: Promotes active recall and self-assessment. Library: Vanilla JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdfdfc;
+            color: #333;
+        }
+        h1, h2, h3 {
+            font-weight: 700;
+        }
+        pre {
+            font-family: 'Fira Code', monospace;
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            position: relative;
+        }
+        .code-copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #4a5568;
+            color: #e2e8f0;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        pre:hover .code-copy-btn {
+            opacity: 1;
+        }
+        .nav-link.active {
+            background-color: #e6fffa;
+            color: #2c7a7b;
+            font-weight: 600;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px;
+            max-height: 300px;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <div class="flex min-h-screen">
+        <aside class="w-64 sticky top-0 h-screen bg-white border-r border-stone-200 p-6 hidden lg:block">
+            <h2 class="text-xl font-bold text-teal-700 mb-6">Shell Scripting</h2>
+            <nav id="desktop-nav" class="space-y-2">
+                <a href="#introduction" class="nav-link block px-4 py-2 rounded-md text-stone-600 hover:bg-stone-100">Introduction</a>
+                <a href="#variables" class="nav-link block px-4 py-2 rounded-md text-stone-600 hover:bg-stone-100">Variables</a>
+                <a href="#control-flow" class="nav-link block px-4 py-2 rounded-md text-stone-600 hover:bg-stone-100">Control Flow</a>
+                <a href="#loops" class="nav-link block px-4 py-2 rounded-md text-stone-600 hover:bg-stone-100">Loops</a>
+                <a href="#functions" class="nav-link block px-4 py-2 rounded-md text-stone-600 hover:bg-stone-100">Functions</a>
+                <a href="#running-scripts" class="nav-link block px-4 py-2 rounded-md text-stone-600 hover:bg-stone-100">Running Scripts</a>
+                <a href="#practice" class="nav-link block px-4 py-2 rounded-md text-stone-600 hover:bg-stone-100">Practice Questions</a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-4 sm:p-6 md:p-10">
+            <div class="max-w-4xl mx-auto">
+                
+                <header class="mb-12">
+                    <h1 class="text-4xl md:text-5xl font-bold text-teal-800 tracking-tight">Interactive Shell Scripting Manual</h1>
+                    <p class="mt-4 text-lg text-stone-600">An interactive guide to the fundamentals of shell scripting. Use the navigation to jump to a topic or scroll through the content.</p>
+                </header>
+
+                <section id="introduction" class="mb-16 space-y-6">
+                    <h2 class="text-3xl font-bold border-b-2 border-teal-200 pb-2">1. Introduction to Shell Scripting</h2>
+                    <p>A shell script is a program written for the Unix/Linux shell. It's a text file containing a sequence of commands, which are executed by the shell. Shell scripts are essential for automating repetitive tasks, performing system administration, and integrating various tools and commands.</p>
+                    <div class="bg-white p-6 rounded-lg border border-stone-200">
+                        <h3 class="text-xl font-semibold mb-3">Key Concepts</h3>
+                        <dl class="space-y-4">
+                            <div>
+                                <dt class="font-semibold text-teal-700">Shell</dt>
+                                <dd class="ml-4 text-stone-600">A command-line interpreter that provides a user interface for accessing the operating system. Common shells include Bash, Zsh, and Ksh.</dd>
+                            </div>
+                            <div>
+                                <dt class="font-semibold text-teal-700">Shebang (`#!`)</dt>
+                                <dd class="ml-4 text-stone-600">The first line of a script, which tells the OS which interpreter to use. For Bash, this is `#!/bin/bash`.</dd>
+                            </div>
+                            <div>
+                                <dt class="font-semibold text-teal-700">Comments (`#`)</dt>
+                                <dd class="ml-4 text-stone-600">Lines starting with a hash symbol are ignored by the shell and are used for adding notes.</dd>
+                            </div>
+                        </dl>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3">Example: "Hello, World!"</h3>
+                        <p class="mb-4">This example shows the basic structure of a script. Create a file named `hello.sh`, add the content, make it executable, and run it.</p>
+                        <pre><code>#!/bin/bash
+# This is my first shell script.
+echo "Hello, World!"</code></pre>
+                    </div>
+                </section>
+
+                <section id="variables" class="mb-16 space-y-6">
+                    <h2 class="text-3xl font-bold border-b-2 border-teal-200 pb-2">2. Variables</h2>
+                    <p>Variables store data. In shell scripting, you don't need to declare a variable's type. Define them with `NAME="Value"` (no spaces) and access them with `$NAME`.</p>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3">Example: Defining and Using Variables</h3>
+                        <pre><code>NAME="John Doe"
+AGE=30
+echo "My name is $NAME and I am $AGE years old."</code></pre>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg border border-stone-200">
+                        <h3 class="text-xl font-semibold mb-3">Special Variables</h3>
+                        <p class="mb-4">The shell provides special variables that are very useful in scripts:</p>
+                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 list-inside">
+                            <li class="p-3 bg-stone-50 rounded-md"><code class="font-mono bg-stone-200 px-1 rounded">$0</code>: The name of the script.</li>
+                            <li class="p-3 bg-stone-50 rounded-md"><code class="font-mono bg-stone-200 px-1 rounded">$1, $2</code>: Positional arguments.</li>
+                            <li class="p-3 bg-stone-50 rounded-md"><code class="font-mono bg-stone-200 px-1 rounded">$#</code>: Number of arguments.</li>
+                            <li class="p-3 bg-stone-50 rounded-md"><code class="font-mono bg-stone-200 px-1 rounded">$?</code>: Exit status of last command.</li>
+                            <li class="p-3 bg-stone-50 rounded-md"><code class="font-mono bg-stone-200 px-1 rounded">$$</code>: Process ID of the script.</li>
+                            <li class="p-3 bg-stone-50 rounded-md"><code class="font-mono bg-stone-200 px-1 rounded">$* / $@</code>: All arguments.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="control-flow" class="mb-16 space-y-6">
+                    <h2 class="text-3xl font-bold border-b-2 border-teal-200 pb-2">3. Control Flow: `if-else`</h2>
+                    <p>Conditional statements allow your script to make decisions. The `if` statement evaluates a condition and executes code based on whether it's true or false.</p>
+                    <div class="chart-container">
+                        <canvas id="ifElseChart"></canvas>
+                    </div>
+                    <p class="text-center text-sm text-stone-500 -mt-4">Visual representation of an if-elif-else block.</p>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3">Example: Checking a Number</h3>
+                        <pre><code>#!/bin/bash
+NUMBER=$1
+if [ "$NUMBER" -gt 0 ]; then
+    echo "The number is positive."
+elif [ "$NUMBER" -lt 0 ]; then
+    echo "The number is negative."
+else
+    echo "The number is zero."
+fi</code></pre>
+                    </div>
+                </section>
+
+                <section id="loops" class="mb-16 space-y-6">
+                    <h2 class="text-3xl font-bold border-b-2 border-teal-200 pb-2">4. Loops: `for` and `while`</h2>
+                    <p>Loops are used to execute a block of code repeatedly. `for` loops iterate over a list of items, while `while` loops continue as long as a condition is true.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-semibold mb-3">`for` Loop Example</h3>
+                            <pre><code>#!/bin/bash
+FRUITS="Apple Banana Cherry"
+for fruit in $FRUITS; do
+    echo "I like $fruit."
+done</code></pre>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-3">`while` Loop Example</h3>
+                            <pre><code>#!/bin/bash
+COUNT=1
+while [ $COUNT -le 5 ]; do
+    echo "Count is $COUNT"
+    COUNT=$((COUNT + 1))
+done</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="functions" class="mb-16 space-y-6">
+                    <h2 class="text-3xl font-bold border-b-2 border-teal-200 pb-2">5. Functions</h2>
+                    <p>Functions group commands into reusable blocks, making your scripts more organized and modular. You can pass arguments to functions just like you do to scripts.</p>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3">Example: A Greeting Function</h3>
+                        <pre><code>#!/bin/bash
+function greet_user() {
+    echo "Hello, $1!"
+    echo "Today's date is $(date)."
+}
+
+# Call the function with an argument
+greet_user "Alice"</code></pre>
+                    </div>
+                </section>
+                
+                <section id="running-scripts" class="mb-16 space-y-6">
+                    <h2 class="text-3xl font-bold border-b-2 border-teal-200 pb-2">6. Creating & Running Scripts</h2>
+                    <p>Follow these three steps to bring your script to life.</p>
+                    <ol class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-teal-600 text-white font-bold mr-4">1</span>
+                            <span><strong class="block">Write the script:</strong> Use a text editor like `nano` to write your commands in a `.sh` file.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-teal-600 text-white font-bold mr-4">2</span>
+                            <span><strong class="block">Set permissions:</strong> Make the file executable with `chmod +x your_script.sh`.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-full bg-teal-600 text-white font-bold mr-4">3</span>
+                            <span><strong class="block">Run the script:</strong> Execute it from the current directory using `./your_script.sh`.</span>
+                        </li>
+                    </ol>
+                </section>
+
+                <section id="practice" class="mb-16 space-y-6">
+                    <h2 class="text-3xl font-bold border-b-2 border-teal-200 pb-2">7. Practice Questions</h2>
+                    <p>Test your knowledge with these questions. Click on a question to reveal the answer.</p>
+                    <div id="questions-container" class="space-y-4"></div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const questionsContainer = document.getElementById('questions-container');
+
+            const questions = [
+                { q: "What is the purpose of the shebang line `#!/bin/bash`?", a: "It tells the operating system to use the Bash interpreter to execute the script." },
+                { q: "How do you add a comment in a shell script?", a: "Start the line with a hash symbol (`#`)." },
+                { q: "Write a script that takes your name as a command-line argument and prints \"Hello, [Your Name]!\".", a: "```bash\n#!/bin/bash\necho \"Hello, $1!\"\n```" },
+                { q: "What is the value of the special variable `$#`?", a: "It holds the number of positional arguments passed to the script." },
+                { q: "What is the difference between `$*` and `$@`?", a: "When quoted, `$*` expands to a single string (`\"\$1 \$2 ...\"`), while `$@` expands to separate strings (`\"\$1\" \"\$2\" ...`). This matters in loops and when passing arguments to other commands." },
+                { q: "Write a script that checks if a file named `my_file.txt` exists.", a: "```bash\n#!/bin/bash\nif [ -f \"my_file.txt\" ]; then\n    echo \"File exists.\"\nelse\n    echo \"File does not exist.\"\nfi\n```" },
+                { q: "How would you check if a variable named `USERNAME` is empty?", a: "Using the `-z` operator: `if [ -z \"$USERNAME\" ]`." },
+                { q: "Write an `if-else` statement that checks if the first argument is numerically greater than 100.", a: "```bash\n#!/bin/bash\nif [ \"$1\" -gt 100 ]; then\n    echo \"Greater than 100.\"\nelse\n    echo \"Not greater than 100.\"\nfi\n```" },
+                { q: "Write a `for` loop that iterates from 1 to 5.", a: "```bash\nfor (( i=1; i<=5; i++ )); do\n    echo $i\ndone\n```" },
+                { q: "Write a `for` loop that prints each item in an array.", a: "```bash\nFILES=(\"report.txt\" \"data.csv\" \"image.jpg\")\nfor file in \"\${FILES[@]}\"; do\n    echo \"Processing $file\"\ndone\n```" },
+                { q: "Write a `while` loop that asks for input until the user types \"quit\".", a: "```bash\nINPUT=\"\"\nwhile [ \"$INPUT\" != \"quit\" ]; do\n    read -p \"Enter command (or 'quit'): \" INPUT\n    echo \"You entered: $INPUT\"\ndone\n```" },
+                { q: "Create a function `print_info` that takes two arguments (name, age).", a: "```bash\nfunction print_info() {\n    echo \"Name: $1, Age: $2\"\n}\nprint_info \"Bob\" 42\n```" },
+                { q: "How do you pass arguments to a function?", a: "You list them after the function call, just like with a script. They are accessed inside the function as `$1`, `$2`, etc." },
+                { q: "What is the value of `$?`?", a: "It holds the exit status of the most recently executed command. `0` means success, and any non-zero value indicates an error." },
+                { q: "Write a script with a function to check if a number is even or odd, then loop through a list of numbers, calling the function for each.", a: "```bash\n#!/bin/bash\nfunction check_even_odd() {\n    if (( $1 % 2 == 0 )); then\n        echo \"$1 is even.\"\n    else\n        echo \"$1 is odd.\"\n    fi\n}\n\nNUMBERS=(1 2 3 4 5 10 21)\nfor num in \"\${NUMBERS[@]}\"; do\n    check_even_odd $num\ndone\n```" }
+            ];
+
+            questions.forEach((item, index) => {
+                const isCode = item.a.includes('```');
+                const answerHtml = isCode 
+                    ? `<pre><code>${item.a.replace(/```bash\n|```/g, '')}</code></pre>`
+                    : `<p class="text-stone-600">${item.a}</p>`;
+
+                const questionEl = document.createElement('div');
+                questionEl.className = 'bg-white border border-stone-200 rounded-lg overflow-hidden';
+                questionEl.innerHTML = `
+                    <button class="w-full text-left p-4 flex justify-between items-center hover:bg-stone-50 focus:outline-none">
+                        <span class="font-semibold">${index + 1}. ${item.q}</span>
+                        <span class="transform transition-transform duration-200 text-teal-500">&#9662;</span>
+                    </button>
+                    <div class="p-4 bg-stone-50 border-t border-stone-200 hidden">
+                        ${answerHtml}
+                    </div>
+                `;
+                questionsContainer.appendChild(questionEl);
+            });
+
+            questionsContainer.addEventListener('click', (e) => {
+                const header = e.target.closest('button');
+                if (!header) return;
+
+                const content = header.nextElementSibling;
+                const arrow = header.querySelector('span:last-child');
+                
+                content.classList.toggle('hidden');
+                arrow.classList.toggle('rotate-180');
+            });
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+
+            sections.forEach(section => observer.observe(section));
+
+            document.querySelectorAll('pre').forEach(pre => {
+                const button = document.createElement('button');
+                button.className = 'code-copy-btn';
+                button.innerHTML = 'Copy &#x2398;';
+                pre.appendChild(button);
+
+                button.addEventListener('click', () => {
+                    const code = pre.querySelector('code').innerText;
+                    navigator.clipboard.writeText(code).then(() => {
+                        button.innerText = 'Copied!';
+                        setTimeout(() => { button.innerHTML = 'Copy &#x2398;'; }, 2000);
+                    });
+                });
+            });
+
+            const ctx = document.getElementById('ifElseChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Condition Check'],
+                    datasets: [
+                        {
+                            label: 'Path if True',
+                            data: [50],
+                            backgroundColor: 'rgba(45, 212, 191, 0.6)',
+                            borderColor: 'rgba(15, 118, 110, 1)',
+                            borderWidth: 1,
+                        },
+                        {
+                            label: 'Path if False (elif/else)',
+                            data: [50],
+                            backgroundColor: 'rgba(248, 113, 113, 0.6)',
+                            borderColor: 'rgba(185, 28, 28, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: 'Conditional Logic Flow' },
+                        legend: { position: 'bottom' },
+                        tooltip: { enabled: false }
+                    },
+                    scales: {
+                        x: { stacked: true, display: false },
+                        y: { stacked: true, display: false }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

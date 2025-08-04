@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shell Scripting Answers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Pastels with Blue Accent -->
+    <!-- Application Structure Plan: A single-page, scrollable layout with both questions and answers visible by default. This is designed for direct review and study, allowing users to see all information without needing to interact with a collapsible interface. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: 20 questions and answers. Goal: Inform/Review knowledge. Viz/Presentation Method: Simple ordered list with embedded code blocks. Interaction: None. Justification: A direct presentation is most effective for a reference document.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+        }
+        h1, h2, h3 {
+            font-weight: 700;
+        }
+        pre {
+            font-family: 'Fira Code', monospace;
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="container mx-auto px-4 py-8 md:py-12 max-w-4xl">
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-sky-700 mb-2">Lab 2: Shell Scripting Answers</h1>
+            <p class="text-lg text-slate-600">Here are the detailed answers to the practice questions.</p>
+        </header>
+
+        <div class="space-y-8">
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">1. How do you read user input into a variable?</h3>
+                <p class="text-slate-600">Use the `read` command, for example: `read -p \"Enter your name: \" NAME`.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">2. Explain the purpose of **command substitution** using `$(...)`.</h3>
+                <p class="text-slate-600">Command substitution allows you to use the output of a command as a value for a variable or as part of a command line. For example, `FILES=$(ls -l)` stores the directory listing in the `FILES` variable.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">3. What is the primary difference between `[ ]` and `[[ ]]` in conditional expressions?</h3>
+                <p class="text-slate-600">`[[ ]]` is an extended test command that provides more advanced features in Bash, such as pattern matching (`=~`), and is generally a safer and more powerful option than `[ ]`.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">4. Write a `case` statement that checks for a single character input (`y`, `Y`, `n`, `N`).</h3>
+                <pre><code class="language-bash">read -p "Continue? (y/n): " choice
+case $choice in
+  [yY])
+    echo "Proceeding..."
+    ;;
+  [nN])
+    echo "Exiting..."
+    ;;
+  *)
+    echo "Invalid input."
+    ;;
+esac</code></pre>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">5. How do you use the `&&` operator to chain commands?</h3>
+                <p class="text-slate-600">The `&&` (AND) operator executes the second command only if the first command succeeds (returns an exit status of 0). Example: `mkdir mydir && cd mydir`.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">6. How do you use the `||` operator to chain commands?</h3>
+                <p class="text-slate-600">The `||` (OR) operator executes the second command only if the first command fails (returns a non-zero exit status). Example: `command_that_might_fail || echo \"Command failed.\"`.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">7. Write a script with a function that takes a directory name and counts the number of files in it.</h3>
+                <pre><code class="language-bash">function count_files() {
+  echo "Number of files in $1: $(ls -l "$1" | grep "^-" | wc -l)"
+}
+count_files "/path/to/directory"</code></pre>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">8. How do you define a variable that is **local** to a function?</h3>
+                <p class="text-slate-600">By using the `local` keyword before the variable name, for example: `local my_var=\"Hello\"`. This prevents the variable from affecting the global scope.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">9. What is the purpose of the `break` command inside a loop?</h3>
+                <p class="text-slate-600">The `break` command is used to immediately exit the current loop.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">10. What is the purpose of the `continue` command inside a loop?</h3>
+                <p class="text-slate-600">The `continue` command skips the current iteration of the loop and moves to the next one.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">11. Write a script that uses a `select` loop to present a menu of options to the user.</h3>
+                <pre><code class="language-bash">select option in "Option 1" "Option 2" "Exit"; do
+  case $option in
+    "Option 1")
+      echo "You chose Option 1."
+      ;;
+    "Option 2")
+      echo "You chose Option 2."
+      ;;
+    "Exit")
+      break
+      ;;
+    *)
+      echo "Invalid option."
+      ;;
+  esac
+done</code></pre>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">12. How can you process the output of a command line-by-line?</h3>
+                <p class="text-slate-600">A `while read` loop is commonly used for this. Example: `cat file.txt | while read line; do echo \"$line\"; done`.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">13. How do you get the number of arguments passed to a function (not the script)?</h3>
+                <p class="text-slate-600">Inside the function, the special variable `$#` refers to the number of arguments passed to that specific function call.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">14. How can you capture the output of a command into a variable?</h3>
+                <p class="text-slate-600">By using command substitution, for example: `my_var=$(ls -l)`.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">15. What is the purpose of `trap` in a shell script?</h3>
+                <p class="text-slate-600">`trap` is used to catch signals (like `SIGINT` from Ctrl+C) and execute a specified command or function before the script exits, allowing for clean-up operations.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">16. Explain the use of **single quotes (`'`) vs. double quotes (`\"`)**.</h3>
+                <p class="text-slate-600">Single quotes preserve the literal value of every character inside them, while double quotes allow for variable expansion (`$var`) and command substitution (`$(...)`).</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">17. How do you write a script that takes an arbitrary number of arguments and prints them one by one?</h3>
+                <pre><code class="language-bash">#!/bin/bash
+for arg in "$@"; do
+    echo "Argument: $arg"
+done</code></pre>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">18. What does the command `grep \"pattern\" file.txt` do?</h3>
+                <p class="text-slate-600">The `grep` command searches for lines containing the specified `pattern` in `file.txt` and prints them to standard output.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">19. How do you get the last modified timestamp of a file in a script?</h3>
+                <p class="text-slate-600">Using the `stat` command, such as `stat -c %y file.txt`.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">20. What is a \"here document\" and how is it used?</h3>
+                <p class="text-slate-600">A here document (`<< EOF`) is a way to pass a multi-line string to a command from within a script, often used with commands like `cat`, `ssh`, or `ftp` to provide a block of input without needing to escape every line.</p>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
